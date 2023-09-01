@@ -1,0 +1,40 @@
+/* TREE VIEW */
+
+.relations {
+	overflow: hidden;
+}
+
+.relations.collapsed {
+	height: 0;
+	padding: 0;
+	margin: 0;
+}
+
+.list {
+	margin-left: 12px;
+	padding-left: 12px;
+	border-left: 1px solid #aaa;
+}
+
+.list-item {
+	padding: 0.5em;
+	cursor: pointer;
+}
+
+.list-item:hover {
+	background-color: rgba(255, 200, 100, 0.5);
+}
+
+.list-item.selected {
+	background-color: rgba(255, 200, 100, 1);
+}
+
+/* TABLE VIEW */
+
+.relation-information > .scroll {
+	max-height: 200px
+}
+
+.relation-information  code {
+	white-space: pre;
+}

@@ -7,17 +7,16 @@
   <h3>Connections</h3>
   <div>
     <template x-for="c in connections">
-        <div class="connection">
-          Host: <span x-text="c.host"></span>
-          Port: <span x-text="c.port"></span>
-          Database: <span x-text="c.database"></span>
-          Username: <span x-text="c.username"></span>
-        </div>
-    <template>
+      <div class="connection">
+        Host: <span x-text="c.host"></span>
+        Port: <span x-text="c.port"></span>
+        Database: <span x-text="c.database"></span>
+        Username: <span x-text="c.username"></span>
+      </div>
+      <template>
   </div>
 </div>
 
 @section Scripts {
-  <script defer type="module" src="~/js/index.js"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script defer type="module" src="~/js/index.js" asp-append-version="true"></script>
 }

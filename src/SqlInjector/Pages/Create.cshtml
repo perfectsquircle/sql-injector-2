@@ -1,0 +1,101 @@
+@page
+@{
+    ViewData["Title"] = "Create";
+}
+
+<div class="panel" x-data="create">
+    <div class="panel-heading">Create Connection</div>
+    <div class="panel-body">
+        <form class="pure-form pure-form-aligned" id="connection-form" x-on:submit.prevent="handleSubmit" action="/foo">
+            <fieldset>
+                <div class="pure-control-group">
+                    <label for="name">Name</label>
+                    <input id="name" x-model="name" placeholder="username@hostname/database" />
+                </div>
+                <div class="pure-control-group">
+                    <label for="type">Type </label>
+                    <select id="type" x-model="databaseType" required="required">
+                        <option value="0">postgres</option>
+                        <option value="1">mysql</option>
+                    </select>
+                </div>
+                <div class="pure-control-group">
+                    <label for="color">Color</label>
+                    <div class="color-picker" id="color">
+                        <input class="color-input" type="hidden" x-model="color" />
+                        <div class="color selected"></div>
+                        <div class="color" style="background-color:#C7AAFF" value="C7AAFF"></div>
+                        <div class="color" style="background-color:#E89F9B" value="E89F9B"></div>
+                        <div class="color" style="background-color:#FFE9B7" value="FFE9B7"></div>
+                        <div class="color" style="background-color:#B7E89B" value="B7E89B"></div>
+                        <div class="color" style="background-color:#B1FBFF" value="B1FBFF"></div>
+                    </div>
+                </div>
+            </fieldset>
+            <fieldset>
+                <div class="pure-control-group">
+                    <label for="hostname">Hostname</label>
+                    <input id="hostname" x-model="hostname" required="required" />
+                </div>
+                <div class="pure-control-group">
+                    <label for="port">Port</label>
+                    <input id="port" type="number" x-model="port" />
+                </div>
+                <div class="pure-control-group">
+                    <label for="database">Database</label>
+                    <input id="database" x-model="database" required="required" />
+                </div>
+                <div class="pure-control-group">
+                    <label for="username">Username</label>
+                    <input id="username" x-model="username" required="required" />
+                </div>
+                <div class="pure-control-group">
+                    <label for="password">Password</label>
+                    <input id="password" type="password" x-model="password" required="required" />
+                </div>
+            </fieldset>
+        </form>
+    </div>
+    <div class="panel-footer clearfix">
+        <div class="right"><a class="pure-button" href="/">Cancel</a>
+            <button class="pure-button pure-button-primary save-button" type="submit" form="connection-form"
+                value="Save">
+                <i class="fa fa-floppy-o"></i> Save</button>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script defer type="module">
+        import db from "/js/db.js";
+
+        document.addEventListener("alpine:init", () => {
+            Alpine.data("create", () => ({
+                name: null,
+                hostname: null,
+                port: null,
+                database: null,
+                username: null,
+                password: null,
+                color: null,
+                databaseType: null,
+
+                async handleSubmit(e) {
+                    await db.connections.add({
+                        name: this.name,
+                        host: this.hostname,
+                        port: this.port,
+                        database: this.database,
+                        username: this.username,
+                        password: this.password,
+                        color: this.color,
+                    });
+
+                    window.location = '/';
+                }
+            }));
+        });
+
+    </script>
+}
