@@ -1,0 +1,12 @@
+{
+  "dependencies": {
+    "alpinejs": "^3.13.0",
+    "dexie": "^3.2.4",
+    "feather-icons": "^4.29.1",
+    "font-awesome": "^4.7.0",
+    "purecss": "^3.0.0"
+  },
+  "scripts": {
+    "postinstall": "bash copy_libs.sh"
+  }
+}
