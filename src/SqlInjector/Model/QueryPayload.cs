@@ -1,6 +1,6 @@
 ﻿namespace SqlInjector.Model;
 
-public class QueryPayload
+public record QueryPayload
 {
     public string Sql { get; set; }
 }

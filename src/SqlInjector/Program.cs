@@ -39,9 +39,9 @@ app.Use(async (context, next) =>
     }
 
     using var webSocket = await context.WebSockets.AcceptWebSocketAsync();
-    using var webSocketSession = new WebSocketSession(webSocket);
+    using var router = new ConsoleRouter();
+    var webSocketSession = new WebSocketSession(webSocket, router);
     await webSocketSession.ConsumeAsync(context.RequestAborted);
-
 });
 
 app.Run();

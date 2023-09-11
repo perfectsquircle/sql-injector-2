@@ -1,25 +1,8 @@
+import { WebSocketSession } from "./WebSocketSession.js";
 import db from "./db.js";
 
-class WebSocketSession {
-  constructor(socket) {
-    socket.onopen = this.connect;
-    socket.onmessage = this.consume;
-  }
-
-  connect() {
-    socket.send(
-      JSON.stringify({
-        command: "connect",
-        payload: database,
-      })
-    );
-  }
-
-  consume(event) {
-    console.log(`[message] Data received from server: ${event.data}`);
-  }
-}
-
-let database = await db.connections.where({ id: 19 }).first();
-let socket = new WebSocket(`ws://${window.location.host}/ws`);
-let session = new WebSocketSession(socket);
+let database = await db.connections.where({ id: 6 }).first();
+let session = new WebSocketSession(`wss://${window.location.host}/ws`);
+await session.open();
+let result = await session.call("connect", database);
+let queryResult = await session.call("query", { sql: "select 1;" });

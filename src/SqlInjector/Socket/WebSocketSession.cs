@@ -1,26 +1,27 @@
 using System.Net.WebSockets;
+using System.Reflection;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-using SqlInjector.Database;
-using SqlInjector.Model;
-
 namespace SqlInjector.Socket;
 
-public class WebSocketSession : IDisposable
+public class WebSocketSession
 {
+    public static readonly JsonSerializerOptions JsonSerializerOptions;
     private readonly WebSocket _webSocket;
-    private readonly JsonSerializerOptions _jsonSerializerOptions;
-    private readonly IDatabaseAdapterFactory _databaseAdapterFactory;
-    private IDatabaseAdapter _databaseAdapter;
+    private readonly IRouter _router;
 
-    public WebSocketSession(WebSocket webSocket)
+    static WebSocketSession()
+    {
+        JsonSerializerOptions = new JsonSerializerOptions(JsonSerializerDefaults.Web);
+        JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    }
+
+    public WebSocketSession(WebSocket webSocket, IRouter router)
     {
         _webSocket = webSocket;
-        _jsonSerializerOptions = new JsonSerializerOptions(JsonSerializerDefaults.Web);
-        _jsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-        _databaseAdapterFactory = new DatabaseAdapterFactory();
+        _router = router;
     }
 
     public async Task ConsumeAsync(CancellationToken cancellationToken)
@@ -44,63 +45,25 @@ public class WebSocketSession : IDisposable
 
     private async Task ConsumeMessageAsync(string text, CancellationToken cancellationToken)
     {
-        var message = JsonSerializer.Deserialize<Message>(text, _jsonSerializerOptions);
+        var message = JsonSerializer.Deserialize<Request>(text, JsonSerializerOptions);
 
         Console.WriteLine(message);
 
         Response response;
         try
         {
-            response = await DispatchAsync(message);
+            var payload = _router.Dispatch(message.Procedure, message.Payload);
+            response = Response.FromResult(message.Id, payload);
         }
         catch (Exception e)
         {
-            response = new Response(Command.Error, e.Message);
+            response = Response.FromError(message.Id, e.Message);
         }
 
         await _webSocket.SendAsync(
-             Encoding.UTF8.GetBytes(JsonSerializer.Serialize(response, _jsonSerializerOptions)),
+             Encoding.UTF8.GetBytes(JsonSerializer.Serialize(response, JsonSerializerOptions)),
              WebSocketMessageType.Text,
              endOfMessage: true,
              cancellationToken);
-    }
-
-    private async Task<Response> DispatchAsync(Message message)
-    {
-        switch (message.Command)
-        {
-            case Command.Connect:
-                {
-                    return Connect(message.Payload.Deserialize<ConnectPayload>(_jsonSerializerOptions));
-                }
-            case Command.Query:
-                {
-                    return await QueryAsync(message.Payload.Deserialize<QueryPayload>(_jsonSerializerOptions));
-                }
-            default:
-                throw new NotImplementedException();
-        }
-    }
-
-    private async Task<Response> QueryAsync(QueryPayload queryPayload)
-    {
-        if (_databaseAdapter is null)
-        {
-            throw new NotSupportedException("Attempting to query before connect.");
-        }
-        var results = await _databaseAdapter.QueryAsync(queryPayload);
-        return new Response(Command.QueryReturn, results);
-    }
-
-    private Response Connect(ConnectPayload connectPayload)
-    {
-        _databaseAdapter = _databaseAdapterFactory.GetDatabaseAdapter(connectPayload.DatabaseType);
-        _databaseAdapter.Connect(connectPayload);
-        return new Response(Command.ConnectReturn);
-    }
-
-    public void Dispose()
-    {
-        _databaseAdapter?.Dispose();
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace SqlInjector.Model;
 
-public class QueryResults
+public record QueryResults
 {
     public IEnumerable<Column> Columns { get; }
     public IEnumerable<object[]> Rows { get; }
@@ -18,7 +18,7 @@ public class QueryResults
     }
 }
 
-public class Column
+public record Column
 {
     public string Name { get; set; }
     public string DataType { get; set; }

@@ -31,17 +31,17 @@ public class PostgresDatabaseAdapter : IDatabaseAdapter
         ((IDisposable)_dataSource)?.Dispose();
     }
 
-    public async Task<QueryResults> QueryAsync(QueryPayload queryPayload)
+    public QueryResults Query(QueryPayload queryPayload)
     {
         using var command = _dataSource.CreateCommand(queryPayload.Sql);
-        using var results = await command.ExecuteReaderAsync();
+        var results = command.ExecuteReader();
 
         if (results.RecordsAffected != -1)
         {
             return new QueryResults(results.RecordsAffected);
         }
 
-        var columnSchema = await results.GetColumnSchemaAsync();
+        var columnSchema = results.GetColumnSchema();
         var columns = columnSchema.Select(c => new Column(c.ColumnName, c.DataTypeName));
 
         return new QueryResults(columns, ReadRows(results));
