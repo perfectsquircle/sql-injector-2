@@ -9,11 +9,12 @@ document.addEventListener("alpine:init", () => {
     username: null,
     password: null,
     color: null,
-    databaseType: null,
+    databaseType: 'postgres',
 
     async handleSubmit(e) {
       await db.connections.add({
         name: this.name,
+        databaseType: this.databaseType,
         host: this.hostname,
         port: this.port,
         database: this.database,

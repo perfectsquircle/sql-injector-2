@@ -1,0 +1,41 @@
+@page
+@{
+  ViewData["Title"] = "Console";
+}
+
+<div class="wrapper console flex-column">
+  <div class="statement-area pure-form flex-6 flex-column pad" style="flex-basis:400px">
+    <div class="console-input-outer flex flex-1">
+      <div class="flex-5 relative margin-right">
+        <fieldset>
+          <legend>Statement</legend><textarea class="mono console-input" name="query" placeholder="Statement"
+            spellcheck="false" required="required" autofocus="autofocus"></textarea>
+        </fieldset>
+      </div>
+      <div class="flex-1 parameters">
+        <fieldset>
+          <legend>Parameters</legend>
+          <ol class="params">
+            <li><input class="param mono" type="text" name="param" /></li>
+          </ol><a class="clear-button right" href="#">clear</a>
+        </fieldset>
+      </div>
+    </div>
+    <div class="execute">
+      <fieldset>
+        <div class="right"><label for="limitInput">Limit&nbsp;</label><input id="limitInput" type="number" value="1000"
+            min="1" name="limit" /></div><input class="pure-button pure-button-primary execute-statement-button"
+          type="submit" value="Execute" title="Execute (ctrl+enter)" tabindex="-1" />&nbsp;<span
+          class="result-stats"><input class="timer mono" type="text" readonly="readonly" value="0ms" />
+          &bull;&nbsp;<input class="result-count mono" type="text" readonly="readonly" value="0 results" /></span>
+      </fieldset>
+    </div>
+  </div>
+  <div class="result-area flex-4 pad scroll" style="flex-basis:400px">
+    <div class="results"></div>
+  </div>
+</div>
+
+@section Scripts {
+  <script defer type="module" src="~/js/console.js" asp-append-version="true"></script>
+}

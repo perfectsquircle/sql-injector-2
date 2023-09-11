@@ -1,3 +1,5 @@
+using SqlInjector.Socket;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -15,6 +17,7 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+app.UseWebSockets();
 
 app.UseRouting();
 
@@ -22,4 +25,25 @@ app.UseAuthorization();
 
 app.MapRazorPages();
 
+app.Use(async (context, next) =>
+{
+    if (context.Request.Path != "/ws")
+    {
+        await next(context);
+        return;
+    }
+    if (!context.WebSockets.IsWebSocketRequest)
+    {
+        context.Response.StatusCode = StatusCodes.Status400BadRequest;
+        return;
+    }
+
+    using var webSocket = await context.WebSockets.AcceptWebSocketAsync();
+    using var webSocketSession = new WebSocketSession(webSocket);
+    await webSocketSession.ConsumeAsync(context.RequestAborted);
+
+});
+
 app.Run();
+
+
