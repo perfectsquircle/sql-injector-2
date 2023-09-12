@@ -11,16 +11,17 @@ export class WebSocketSession {
 
   open() {
     this.socket = new WebSocket(this.url);
-    this.socket.onmessage = this.onmessage.bind(this);
+    this.socket.addEventListener("message", this.onmessage.bind(this));
     return new Promise((resolve, reject) => {
-      this.socket.onopen = resolve;
-      this.socket.onerror = reject;
+      this.socket.addEventListener("open", resolve, { once: true });
+      this.socket.addEventListener("error", reject, { once: true });
     });
   }
 
   close() {
     return new Promise((resolve, reject) => {
-      this.socket.onclose = resolve;
+      this.socket.addEventListener("close", resolve, { once: true });
+      this.socket.close();
     });
   }
 

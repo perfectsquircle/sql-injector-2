@@ -3,36 +3,71 @@
   ViewData["Title"] = "Console";
 }
 
-<div class="wrapper console flex-column">
+<div class="wrapper console flex-column" x-data="console">
   <div class="statement-area pure-form flex-6 flex-column pad" style="flex-basis:400px">
     <div class="console-input-outer flex flex-1">
       <div class="flex-5 relative margin-right">
         <fieldset>
-          <legend>Statement</legend><textarea class="mono console-input" name="query" placeholder="Statement"
-            spellcheck="false" required="required" autofocus="autofocus"></textarea>
+          <legend>Statement</legend>
+          <textarea class="mono console-input" name="query" placeholder="Statement" spellcheck="false"
+            required="required" autofocus="autofocus" rows="20" cols="100" x-model="sql"></textarea>
         </fieldset>
       </div>
       <div class="flex-1 parameters">
         <fieldset>
           <legend>Parameters</legend>
           <ol class="params">
-            <li><input class="param mono" type="text" name="param" /></li>
-          </ol><a class="clear-button right" href="#">clear</a>
+            <li>
+              <input class="param mono" type="text" name="param" />
+            </li>
+          </ol>
+          <a class="clear-button right" href="#">clear</a>
         </fieldset>
       </div>
     </div>
     <div class="execute">
       <fieldset>
-        <div class="right"><label for="limitInput">Limit&nbsp;</label><input id="limitInput" type="number" value="1000"
-            min="1" name="limit" /></div><input class="pure-button pure-button-primary execute-statement-button"
-          type="submit" value="Execute" title="Execute (ctrl+enter)" tabindex="-1" />&nbsp;<span
-          class="result-stats"><input class="timer mono" type="text" readonly="readonly" value="0ms" />
-          &bull;&nbsp;<input class="result-count mono" type="text" readonly="readonly" value="0 results" /></span>
+        <div class="right">
+          @* <label for="auto-commit">Auto-commit&nbsp;</label>
+          <input id="auto-commit" type="checkbox" x-model="autoCommit" x-bind:disabled="statementsPendingCommit > 0" /> *@
+          <label for="limit-input">Limit&nbsp;</label>
+          <input id="limit-input" type="number" value="1000" min="1" name="limit" x-model="limit" />
+        </div>
+        <input class=" pure-button pure-button-primary" type="submit" value="Execute" title="Execute (ctrl+enter)"
+          tabindex="-1" x-on:click="execute" x-bind:disabled="executing" />&nbsp;
+        <span class="result-stats">
+          <input class="timer mono" type="text" readonly="readonly" x-model="timer" />
+          &bull;&nbsp;
+          <input class="result-count mono" type="text" readonly="readonly" x-model="rowCount" />
+        </span>
+        @* <span class="transaction-controls" x-show="!autoCommit">
+          <button class="pill" x-text="statementsPendingCommit"></button>
+          <button class="pure-button" x-bind:disabled="statementsPendingCommit === 0">Commit</button>
+          <button class="pure-button" x-bind:disabled="statementsPendingCommit === 0">Rollback</button>
+        </span> *@
       </fieldset>
     </div>
   </div>
   <div class="result-area flex-4 pad scroll" style="flex-basis:400px">
-    <div class="results"></div>
+    <div class="results" x-bind:class="executing ? 'fade' : ''">
+      <table class="result-rows pure-table pure-table-horizontal mono">
+        <thead>
+          <template x-for="column in columns">
+            <th x-text="column.name"></th>
+          </template>
+        </thead>
+        <tbody>
+          <template x-for="row in rows">
+            <tr>
+              <template x-for="value in row">
+                <td tabindex="1" x-text="value"></td>
+              </template>
+            </tr>
+          </template>
+        </tbody>
+      </table>
+    </div>
+    <pre x-text="error"></pre>
   </div>
 </div>
 

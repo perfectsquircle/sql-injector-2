@@ -1,6 +1,5 @@
 # TODO
 
-- Figure out websockets
 - Convert all CDN assets to local assets.
   - Use libman!
   - https://learn.microsoft.com/en-us/aspnet/core/client-side/libman/libman-cli?view=aspnetcore-7.0
