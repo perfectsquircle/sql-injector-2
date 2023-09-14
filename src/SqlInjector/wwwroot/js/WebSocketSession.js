@@ -1,16 +1,20 @@
 export class WebSocketSession {
   /** @type string */
-  url = null;
+  path;
   /** @type WebSocket */
-  socket = null;
+  socket;
+  /** @type Map */
+  waiting;
 
-  constructor(url) {
-    this.url = url;
-    this.waiting = {};
+  constructor(path) {
+    this.path = path;
+    this.waiting = new Map();
   }
 
   open() {
-    this.socket = new WebSocket(this.url);
+    let protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
+    let url = `${protocol}//${window.location.host}${this.path}`;
+    this.socket = new WebSocket(url);
     this.socket.addEventListener("message", this.onmessage.bind(this));
     return new Promise((resolve, reject) => {
       this.socket.addEventListener("open", resolve, { once: true });
@@ -19,18 +23,11 @@ export class WebSocketSession {
   }
 
   close() {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       this.socket.addEventListener("close", resolve, { once: true });
       this.socket.close();
+      this.socket = null;
     });
-  }
-
-  onmessage(event) {
-    console.log(`[message] Data received from server: ${event.data}`);
-    let response = JSON.parse(event.data);
-    let waiting = this.waiting[response.id];
-    delete this.waiting[response.id];
-    waiting(response.error, response.payload);
   }
 
   /**
@@ -40,15 +37,15 @@ export class WebSocketSession {
    * @returns @type Promise
    */
   call(procedure, payload) {
+    const id = Math.random().toString(16).slice(2);
     return new Promise((resolve, reject) => {
-      const id = Math.random().toString(16).slice(2);
-      this.waiting[id] = (error, responsePayload) => {
+      this.waiting.set(id, (error, responsePayload) => {
         if (error) {
           reject("Server Error: " + error);
         } else {
           resolve(responsePayload);
         }
-      };
+      });
 
       this.socket.send(
         JSON.stringify({
@@ -58,5 +55,13 @@ export class WebSocketSession {
         })
       );
     });
+  }
+
+  onmessage(event) {
+    console.log(`[message] Data received from server: ${event.data}`);
+    let response = JSON.parse(event.data);
+    let callback = this.waiting.get(response.id);
+    this.waiting.delete(response.id);
+    callback(response.error, response.payload);
   }
 }

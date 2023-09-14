@@ -29,7 +29,8 @@
       <fieldset>
         <div class="right">
           @* <label for="auto-commit">Auto-commit&nbsp;</label>
-          <input id="auto-commit" type="checkbox" x-model="autoCommit" x-bind:disabled="statementsPendingCommit > 0" /> *@
+          <input id="auto-commit" type="checkbox" x-model="autoCommit" x-bind:disabled="statementsPendingCommit > 0" />
+          *@
           <label for="limit-input">Limit&nbsp;</label>
           <input id="limit-input" type="number" value="1000" min="1" name="limit" x-model="limit" />
         </div>
@@ -41,9 +42,9 @@
           <input class="result-count mono" type="text" readonly="readonly" x-model="rowCount" />
         </span>
         @* <span class="transaction-controls" x-show="!autoCommit">
-          <button class="pill" x-text="statementsPendingCommit"></button>
-          <button class="pure-button" x-bind:disabled="statementsPendingCommit === 0">Commit</button>
-          <button class="pure-button" x-bind:disabled="statementsPendingCommit === 0">Rollback</button>
+        <button class="pill" x-text="statementsPendingCommit"></button>
+        <button class="pure-button" x-bind:disabled="statementsPendingCommit === 0">Commit</button>
+        <button class="pure-button" x-bind:disabled="statementsPendingCommit === 0">Rollback</button>
         </span> *@
       </fieldset>
     </div>
@@ -72,5 +73,5 @@
 </div>
 
 @section Scripts {
-  <script defer type="module" src="~/js/console.js" asp-append-version="true"></script>
+  <script defer type="module" src="~/js/console.js"></script>
 }

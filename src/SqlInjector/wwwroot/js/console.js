@@ -1,9 +1,18 @@
-import { WebSocketSession } from "./WebSocketSession.js";
+import { ConsoleSession } from "./ConsoleSession.js";
 import db from "./db.js";
+import { getFromQuery } from "./utils.js";
+
+var connectionId = Number(getFromQuery("id"));
+let session = new ConsoleSession("/ws/console");
 
 document.addEventListener("alpine:init", () => {
   Alpine.data("console", () => ({
-    async init() {},
+    async init() {
+      let database = await db.connections.where({ id: connectionId }).first();
+      if (!database) return;
+      await session.open();
+      await session.connect(database);
+    },
 
     sql: "SELECT 1  as foo, 2 as bar, 3 as baz, pg_sleep(3);",
     executing: false,
@@ -22,7 +31,7 @@ document.addEventListener("alpine:init", () => {
       this.executing = true;
       this.startTimer();
       try {
-        let { columns, rows } = await session.call("query", { sql: this.sql });
+        let { columns, rows } = await session.query({ sql: this.sql });
         this.columns = columns;
         this.rows = rows;
         this.rowCount =
@@ -51,9 +60,3 @@ document.addEventListener("alpine:init", () => {
     },
   }));
 });
-
-let database = await db.connections.where({ id: 19 }).first();
-let protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
-let session = new WebSocketSession(`${protocol}//${window.location.host}/ws`);
-await session.open();
-await session.call("connect", database);

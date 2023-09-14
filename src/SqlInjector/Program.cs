@@ -27,7 +27,7 @@ app.MapRazorPages();
 
 app.Use(async (context, next) =>
 {
-    if (context.Request.Path != "/ws")
+    if (context.Request.Path != "/ws/console")
     {
         await next(context);
         return;
