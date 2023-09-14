@@ -7,10 +7,11 @@
   <template x-for="c in connections">
     <div class="connection panel">
       <div class="panel-heading break-all clearfix" style="background-color:##{c.color}">
-        <a class="right icon-button pure-button-primary" x-bind:href="`/edit/${c.id}`">
+        <a class="right" x-bind:href="`/edit/${c.id}`">
           <i class="fa fa-pencil" title="Edit"></i>
+          Edit
         </a>
-        <i class="fa fa-database"></i> <span class="mono" x-text="c.name"></span>
+        <i class="fa fa-database"></i> <span x-text="c.name"></span>
       </div>
       <div class="panel-body pure-g break-all">
         <div class="pure-u-1-4"><strong>Hostname</strong></div>
@@ -21,12 +22,25 @@
         <div class="pure-u-3-4"><span class="mono" x-text="c.username"></span></div>
       </div>
       <div class="panel-footer">
-        <a x-bind:href="`/console?id=${c.id}`">Connect</a> &mdash; <a x-bind:href="`/schema/${c.id}`">View Schema</a>
+        <a x-bind:href="`/console?id=${c.id}`">
+          <i class="fa fa-plug"></i>
+          Connect
+        </a>
+        <span class="spacer"></span>
+        <a x-bind:href="`/schema/${c.id}`">
+          <i class="fa fa-binoculars"></i>
+          View Schema
+        </a>
       </div>
     </div>
   </template>
   <div class="panel new-connection text-center flex-1">
-    <div class="panel-body"><a href="/create"><i class="fa fa-plus"></i> Add connection</a></div>
+    <div class="panel-body">
+      <a href="/create">
+        <i class="fa fa-plus"></i>
+        Add connection
+      </a>
+    </div>
   </div>
 </section>
 
