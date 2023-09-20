@@ -1,22 +1,53 @@
 ﻿@page
 @{
-  ViewData["Title"] = "Home page";
+  ViewData["Title"] = "Connections";
 }
 
-<div x-data="app">
-  <h3>Connections</h3>
-  <div>
-    <template x-for="c in connections">
-      <div class="connection">
-        Host: <span x-text="c.host"></span>
-        Port: <span x-text="c.port"></span>
-        Database: <span x-text="c.database"></span>
-        Username: <span x-text="c.username"></span>
+<section class="connections panels center" x-data="connections">
+  <template x-for="c in connections">
+    <div class="connection panel">
+      <div class="panel-heading break-all clearfix" x-bind:style="'background-color:' + c.color">
+        <a class="right" x-bind:href="`/edit?id=${c.id}`">
+          <i class="fa fa-pencil" title="Edit"></i>
+          Edit
+        </a>
+        <div x-on:click="c.open = !c.open" style="cursor:pointer">
+          <i class="fa fa-database"></i> <span x-text="c.name"></span>
+        </div>
       </div>
-      <template>
+      <div class="panel-body pure-g break-all" x-show="c.open">
+        <div class="pure-u-1-4"><strong>Type</strong></div>
+        <div class="pure-u-3-4"><span class="mono" x-text="c.databaseType"></span></div>
+        <div class="pure-u-1-4"><strong>Hostname</strong></div>
+        <div class="pure-u-3-4"><span class="mono" x-text="c.host"></span></div>
+        <div class="pure-u-1-4"><strong>Database</strong></div>
+        <div class="pure-u-3-4"><span class="mono" x-text="c.database"></span></div>
+        <div class="pure-u-1-4"><strong>Username</strong></div>
+        <div class="pure-u-3-4"><span class="mono" x-text="c.username"></span></div>
+      </div>
+      <div class="panel-footer">
+        <a x-bind:href="`/console?id=${c.id}`">
+          <i class="fa fa-plug"></i>
+          Connect
+        </a>
+        <span class="spacer"></span>
+        <a x-bind:href="`/schema?id=${c.id}`">
+          <i class="fa fa-binoculars"></i>
+          View Schema
+        </a>
+      </div>
+    </div>
+  </template>
+  <div class="panel new-connection text-center flex-1">
+    <div class="panel-body">
+      <a href="/create">
+        <i class="fa fa-plus"></i>
+        Add connection
+      </a>
+    </div>
   </div>
-</div>
+</section>
 
 @section Scripts {
-  <script defer type="module" src="~/js/index.js" asp-append-version="true"></script>
+  <script defer type="module" src="~/js/connections.js" asp-append-version="true"></script>
 }

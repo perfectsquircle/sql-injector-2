@@ -11,25 +11,24 @@
         <fieldset>
           <div class="pure-control-group">
             <label for="name">Name</label>
-            <input id="name" x-model="name" placeholder="username@hostname/database" />
+            <input id="name" x-model="name" />
           </div>
           <div class="pure-control-group">
             <label for="type">Type </label>
             <select id="type" x-model="databaseType" required="required">
-              <option value="0">postgres</option>
-              <option value="1">mysql</option>
+              <option>PostgreSQL</option>
+              <option>MySQL</option>
+              <option>Oracle</option>
             </select>
           </div>
           <div class="pure-control-group">
             <label for="color">Color</label>
             <div class="color-picker" id="color">
-              <input class="color-input" type="hidden" x-model="color" />
-              <div class="color selected"></div>
-              <div class="color" style="background-color:#C7AAFF" value="C7AAFF"></div>
-              <div class="color" style="background-color:#E89F9B" value="E89F9B"></div>
-              <div class="color" style="background-color:#FFE9B7" value="FFE9B7"></div>
-              <div class="color" style="background-color:#B7E89B" value="B7E89B"></div>
-              <div class="color" style="background-color:#B1FBFF" value="B1FBFF"></div>
+              <template x-for="colorChoice in colorChoices">
+                <div class="color" x-bind:style="'background-color:' + colorChoice" x-on:click="color = colorChoice"
+                  x-bind:class="color === colorChoice && 'selected'">
+                </div>
+              </template>
             </div>
           </div>
         </fieldset>

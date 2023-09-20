@@ -190,6 +190,7 @@ html, button, input, select, textarea,
 
 .panel .panel-footer {
     border-top: 1px solid #aaa;
+    margin-top: -1px;
 }
 
 .panel .panel-body {

@@ -6,7 +6,7 @@ using SqlInjector.Model;
 
 namespace SqlInjector.Database;
 
-public class PostgresDatabaseAdapter : IDatabaseAdapter
+public class PostgreSqlDatabaseAdapter : IDatabaseAdapter
 {
     private NpgsqlDataSource _dataSource;
 

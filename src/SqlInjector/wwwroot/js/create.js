@@ -9,7 +9,16 @@ document.addEventListener("alpine:init", () => {
     username: null,
     password: null,
     color: null,
-    databaseType: 'postgres',
+    databaseType: "PostgreSQL",
+
+    colorChoices: [
+      "#FFFFFF",
+      "#C7AAFF",
+      "#E89F9B",
+      "#FFE9B7",
+      "#B7E89B",
+      "#B1FBFF",
+    ],
 
     async handleSubmit(e) {
       await db.connections.add({

@@ -11,7 +11,7 @@ public class DatabaseAdapterFactory : IDatabaseAdapterFactory
     {
         return databaseType switch
         {
-            "postgres" => new PostgresDatabaseAdapter(),
+            "PostgreSQL" => new PostgreSqlDatabaseAdapter(),
             _ => throw new NotImplementedException(),
         };
     }
