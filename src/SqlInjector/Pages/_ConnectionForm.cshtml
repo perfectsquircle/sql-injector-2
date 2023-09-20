@@ -1,0 +1,48 @@
+<form class="pure-form pure-form-aligned" id="connection-form" x-on:submit.prevent="handleSubmit">
+  <fieldset>
+    <div class="pure-control-group">
+      <label for="name">Name</label>
+      <input id="name" x-model="connection.name" />
+    </div>
+    <div class="pure-control-group">
+      <label for="type">Type </label>
+      <select id="type" x-model="connection.databaseType" required="required">
+        <option>PostgreSQL</option>
+        <option>MySQL</option>
+        <option>Oracle</option>
+      </select>
+    </div>
+    <div class="pure-control-group">
+      <label for="color">Color</label>
+      <div class="color-picker" id="color">
+        <template x-for="colorChoice in colorChoices">
+          <div class="color" x-bind:style="'background-color:' + colorChoice"
+            x-on:click="connection.color = colorChoice" x-bind:class="connection.color === colorChoice && 'selected'">
+          </div>
+        </template>
+      </div>
+    </div>
+  </fieldset>
+  <fieldset>
+    <div class="pure-control-group">
+      <label for="hostname">Hostname</label>
+      <input id="hostname" x-model="connection.host" required="required" />
+    </div>
+    <div class="pure-control-group">
+      <label for="port">Port</label>
+      <input id="port" type="number" x-model="connection.port" />
+    </div>
+    <div class="pure-control-group">
+      <label for="database">Database</label>
+      <input id="database" x-model="connection.database" required="required" />
+    </div>
+    <div class="pure-control-group">
+      <label for="username">Username</label>
+      <input id="username" x-model="connection.username" required="required" />
+    </div>
+    <div class="pure-control-group">
+      <label for="password">Password</label>
+      <input id="password" type="password" x-model="connection.password" required="required" />
+    </div>
+  </fieldset>
+</form>

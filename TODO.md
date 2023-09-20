@@ -1,11 +1,10 @@
 # TODO
 
 - Restyle connections list.
-  - Move connections list to home screen.
   - Implement "delete connection"
+  - Show database kind icons
 - Do schema view MVP
 - Implement "test connection" in create/edit screens.
-- Implement "edit connection"
 - Add import/export for connections
 - Console Page
   - Add Syntax Highlighting to Console.

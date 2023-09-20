@@ -1,15 +1,23 @@
 @page
 @{
-  ViewData["Title"] = "Create";
+  ViewData["Title"] = "Edit";
 }
 
 <section class="center">
   <div class="panel" x-data="create">
-    <div class="panel-heading">Create Connection</div>
+    <div class="panel-heading">Edit Connection</div>
     <div class="panel-body">
       @Html.Partial("_ConnectionForm")
     </div>
     <div class="panel-footer clearfix">
+      <div class="left">
+        <form id="delete-form" x-on:submit.prevent="handleDelete">
+          <button class="pure-button pure-button-error" type="submit" form="delete-form" value="Delete">
+            <i class="fa fa-trash-o"></i>
+            Delete
+          </button>
+        </form>
+      </div>
       <div class="right"><a class="pure-button" href="/">Cancel</a>
         <button class="pure-button pure-button-primary save-button" type="submit" form="connection-form" value="Save">
           <i class="fa fa-floppy-o"></i> Save</button>
@@ -20,5 +28,5 @@
 
 
 @section Scripts {
-  <script defer type="module" src="~/js/create.js" asp-append-version="true"></script>
+  <script defer type="module" src="~/js/edit.js" asp-append-version="true"></script>
 }
